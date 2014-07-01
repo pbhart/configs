@@ -58,4 +58,4 @@ autoload -Uz promptinit && promptinit
 PS1="%K{blue}%n%k@%m:%~/ > "
 PS2="> "
 # RPS1="%(?..(%?%))"
-RPS1="%K{blue}%t%k"
+RPS1="%K{blue}%t%k%' %w"
