@@ -13,3 +13,6 @@ alias lg='ls --group-directories-first'
 export PATH=$PATH:~/bin
 
 
+source ~/.rvm/scripts/rvm
+source ~/.rvm/scripts/rvm
+source ~/.rvm/scripts/rvm

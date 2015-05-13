@@ -1,60 +1,109 @@
-" .vimrc
-" Phil Hart
-" Sun Jun 29 19:58:58 CDT 2014
-
-filetype plugin indent on
-
-""""""""""""""""""""""""""""""""""""""""""""""""
-" Forget being compatible with good ol' vi
 set nocompatible
 
-" Turn on that syntax highlighting
-syntax on
+filetype on
+filetype plugin on
+filetype indent on
 
-" Why is this not a default
+nmap <silent><Leader>B <ESC>/end<CR>=%:noh<CR>
+nmap <silent> <M-S-Left> <ESC>:bp<CR>
+nmap <Leader>U <ESC>:TlistUpdate<CR>
+nmap <Leader>M <ESC>:wa<CR>:make!<CR>
+nmap <Leader>D <ESC>:w<CR>:diffthis<CR>
+nmap <Leader>d <ESC>:w<CR>:diffoff<CR>
+nmap <silent><Leader>q <ESC>:copen<CR>
+nmap <silent><Leader>n <ESC>:cn<CR>
+nmap <silent><Leader>; <ESC>d/;/e<CR>:noh<CR>
+nmap <Leader><Leader>s <ESC>:cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <Leader><Leader>g <ESC>:cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <Leader><Leader>d <ESC>:cs find d <C-R>=expand("<cword>")<CR><CR>
+nmap <Leader><Leader>c <ESC>:cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <Leader><Leader>t <ESC>:cs find t 
+nmap <Leader><Leader>e <ESC>:cs find e 
+nmap <Leader><Leader>f <ESC>:cs find f <C-R>=expand("<cword>")<CR><CR>
+nmap <Leader><Leader>i <ESC>:cs find i <C-R>=expand("<cword>")<CR><CR>
+nmap <Leader>P <ESC>:Pydoc <C-R>=expand("<cword>")<CR>
+map <C-_> :cstag <C-R>=expand("<cword>")<CR><CR>
+noremap <f11> <esc>:syntax sync fromstart<cr>
+inoremap <f11> <esc>:syntax sync fromstart<cr>a
+
+set nohlsearch
+set incsearch
+
+" set sane autoindent and 4 space soft tabs
+syntax enable
+set cindent
+set nopaste  " people say this has to be off
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
+set expandtab
+set autoindent
+set smartindent
+
+
+" i like status always
+set laststatus=2
+set statusline=%<%f%=\ [%1*%M%*%n%R]\ y\ %-19(%3l,%02c%03V%)
+
+"spell checking on
+nmap <Leader>S <ESC>:setlocal spell spelllang=en_us<CR>
+set mousemodel=popup
+
+set tags=tags;/home/pbhart
+
+" fix up the backspace
+set backspace=2 " make backspace work normal (non-vi style)
+set whichwrap+=<,>,h,l  " backspace and cursor keys wrap to next/prev lines
+
+" make find search for files here, then in the cd dir
+autocmd FileType ruby set path=./**,**
+setl path=./**,**
+
+" special 'save my session and exit' binding
+nmap <F12> <Esc>:wa<CR>:mksession!<CR>:qa<CR>
+
+if has("cscope")
+  " uncoment this and set if vim can't find it
+  "set csprg=/usr/local/bin/cscope
+  set csto=0
+  set cst
+  set nocsverb
+  " add any database in current directory
+  if filereadable("cscope.out")
+    cs add cscope.out
+    " else add database pointed to by environment
+  elseif $CSCOPE_DB != ""
+    cs add $CSCOPE_DB
+  endif
+  set csverb
+endif
+
+set shell=bash
+
+autocmd BufRead *.rl  setfiletype=ragel
+autocmd BufRead *.asm  setfiletype=earing
+autocmd BufRead *.factor  setfiletype=factor
+
+set number
+colorscheme blue
+"colorscheme native
+
+runtime! ftplugin/man.vim
+set grepprg=/usr/local/bin/ack
 set hidden
 
-" At least let yourself know what mode you're in
-set showmode
+filetype plugin indent on
+set noerrorbells
+set visualbell
+set t_vb=
 
-" Enable enhanced command-line completion. Presumes you have compiled
-" with +wildmenu.  See :help 'wildmenu'
-set wildmenu
+let g:pydiction_location = '/home/phbart/.vim/ftplugin/complete-dict'
+set noic
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Better Settings Wyatt goes here
-"
-" Set the forward slash to be the slash of note.  Backslashes suck
-" This is really only applicable to Windows but I like to have a vimrc
-" that works no matter what OS I'm currently on
-set shellslash
+call pathogen#infect()
 
-" Make command line two lines high
-set ch=2
-
-" set visual bell -- I hate that damned beeping
-set vb
-
-" Allow backspacing over indent, eol, and the start of an insert
-set backspace=2
-
-" Set the status line the way I like it
-set stl=%f\ %m\ %r\ Line:\ %l/%L[%p%%]\ Col:\ %c\ Buf:\ #%n\ [%b][0x%B]
-
-" tell Vim to always put a status line in, even if there is only one
-" window
-set laststatus=2
-
-set timeoutlen=1000
-
-" Keep some stuff in the history
-set history=100
-
-""""""""""""""""""""""""""""""""""
-" phil's stuff goes here
-
-colorscheme blue
-
+" phil's stuff
+"******************************************
 set cursorcolumn
 
 set cursorline
@@ -63,41 +112,19 @@ set cursorline
 ino jk <esc>
 cno jk <c-c>
 
-" Automatically save Foldings
-"au BufWinLeave * silent! mkview
-"au BufWinEnter * silent! loadview
-
-" remaps yank and put to use general clipboard
-" noremap p "+P
-" noremap y "+y
-
 set clipboard=unnamed
 
 set pdev=sam
 
-""""##################################
-" learn vim scripting the hard way
-"
-" echom "(<^.^>)"
-
-
-set number 
+"set number 
 set relativenumber
 
-nnoremap - ddp      " Move line down
-nnoremap _ dd2kp    " Move line up
-
-" 4.3
-inoremap <c-u> <esc>viwUi     " Cap a word in insert
-nnoremap <c-u> viwU<esc>      " Cap a word in normal
-
-" 6.2
+" turn on wildmennu
+set wildmenu
 
 let mapleader = ","
 let maplocalleader = "\\" 
 
-" 7.1 7.2
-"
 " Let's make it easy to edit this file (mnemonic for the key sequence is
 " 'e'dit 'v'imrc)
 nnoremap <leader>ev :split $MYVIMRC<cr>
@@ -111,17 +138,8 @@ iabbrev withe with
 iabbrev pbh  Phil Hart
 iabbrev @ pbhart@gamil.com
 
+set tabstop=2
+set spell
 
-" 9.2
-"
-nnoremap <leader>" viw<esc>a"<esc>hbi"<esc>lel
-nnoremap <leader>' viw<esc>a'<esc>hbi'<esc>lel
-
-" I don't want to us these rather us 0, ^, $ instead
-" nnoremap <leader>H 0
-" nnoremap <leader>L $
-
-" Fix?
-vnoremap <leader>B "`<,`>"
 
 
